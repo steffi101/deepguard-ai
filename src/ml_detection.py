@@ -15,14 +15,14 @@ class ThreatDetectionEngine:
         """Extract simple features for ML"""
         features = df.copy()
         
-        # Create basic features
+
         features['total_bytes'] = features['bytes_sent'] + features['bytes_received']
         features['total_packets'] = features['packets_sent'] + features['packets_received']
         features['bytes_per_packet'] = features['total_bytes'] / np.maximum(features['total_packets'], 1)
         features['is_high_port'] = (features['dest_port'] > 1024).astype(int)
         features['duration_log'] = np.log1p(features['duration'])
         
-        # Select numerical features
+
         feature_cols = ['total_bytes', 'total_packets', 'bytes_per_packet', 'is_high_port', 'duration_log']
         return features[feature_cols].fillna(0)
     
@@ -44,7 +44,7 @@ class ThreatDetectionEngine:
         predictions = self.model.predict(X_scaled)
         scores = self.model.decision_function(X_scaled)
         
-        # Convert predictions (-1 = anomaly, 1 = normal) to (1 = anomaly, 0 = normal)
+ 
         anomalies = (predictions == -1).astype(int)
         
         return anomalies, scores
