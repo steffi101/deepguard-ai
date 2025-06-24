@@ -40,7 +40,7 @@ class NetworkTrafficSimulator:
             ipaddress.IPv4Network('104.16.0.0/16')
         ]
         
-        # Common ports and their typical behaviors
+
         self.service_ports = {
             80: {'protocol': 'HTTP', 'typical_bytes': (500, 50000)},
             443: {'protocol': 'HTTPS', 'typical_bytes': (800, 100000)},
@@ -52,7 +52,7 @@ class NetworkTrafficSimulator:
             1433: {'protocol': 'SQL', 'typical_bytes': (200, 100000)}
         }
         
-        # Attack patterns with realistic characteristics
+
         self.attack_patterns = {
             'port_scan': {
                 'description': 'Systematic scanning of multiple ports',
@@ -104,7 +104,7 @@ class NetworkTrafficSimulator:
     def generate_internal_ip(self) -> str:
         """Generate a realistic internal IP address"""
         network = random.choice(self.internal_networks)
-        # Generate random host within the network
+
         host_id = random.randint(1, min(1000, network.num_addresses - 2))
         return str(network.network_address + host_id)
     
@@ -120,37 +120,37 @@ class NetworkTrafficSimulator:
         base_time = datetime.now() - timedelta(hours=1)
         
         for i in range(count):
-            # Normal business patterns
+
             timestamp = base_time + timedelta(seconds=random.randint(0, 3600))
             
-            # Typical internal to external communication
+
             source_ip = self.generate_internal_ip()
             dest_ip = self.generate_external_ip()
             
-            # Common service ports weighted by frequency
+
             dest_port = np.random.choice(
                 list(self.service_ports.keys()),
-                p=[0.4, 0.35, 0.05, 0.1, 0.03, 0.02, 0.03, 0.02]  # HTTP/HTTPS dominate
+                p=[0.4, 0.35, 0.05, 0.1, 0.03, 0.02, 0.03, 0.02]  
             )
             
-            source_port = random.randint(32768, 65535)  # Ephemeral port range
+            source_port = random.randint(32768, 65535)  
             
             service_info = self.service_ports[dest_port]
             min_bytes, max_bytes = service_info['typical_bytes']
             
-            # Generate realistic data sizes with log-normal distribution
+
             bytes_sent = int(np.random.lognormal(np.log(min_bytes), 1))
             bytes_received = int(np.random.lognormal(np.log(max_bytes), 1.5))
             
-            # Packets based on typical MTU
+
             packets_sent = max(1, bytes_sent // 1500)
             packets_received = max(1, bytes_received // 1500)
             
-            # Duration based on service type
-            if dest_port in [80, 443]:  # Web traffic
-                duration = np.random.exponential(5.0)  # Quick requests
+
+            if dest_port in [80, 443]:  
+                duration = np.random.exponential(5.0) 
             elif dest_port == 22:  # SSH
-                duration = np.random.exponential(300.0)  # Longer sessions
+                duration = np.random.exponential(300.0)  
             else:
                 duration = np.random.exponential(30.0)
             
@@ -178,11 +178,10 @@ class NetworkTrafficSimulator:
         normal_count = int(total_flows * normal_ratio)
         
         flows = []
-        
-        # Generate normal traffic
+
         flows.extend(self.generate_normal_traffic(normal_count))
         
-        # Add some simple attack simulation
+
         remaining = total_flows - normal_count
         for i in range(remaining):
             flow = self.generate_normal_traffic(1)[0]
@@ -190,7 +189,7 @@ class NetworkTrafficSimulator:
             flow.attack_type = random.choice(['ddos', 'brute_force', 'port_scan', 'data_exfiltration'])
             flows.append(flow)
         
-        # Sort by timestamp
+
         flows.sort(key=lambda x: x.timestamp)
         
         return flows
@@ -218,7 +217,7 @@ class NetworkTrafficSimulator:
         
         return pd.DataFrame(data)
 
-# Usage example
+
 if __name__ == "__main__":
     simulator = NetworkTrafficSimulator()
     
