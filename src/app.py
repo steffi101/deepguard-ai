@@ -14,14 +14,13 @@ from dataclasses import dataclass, asdict
 from typing import Dict, List, Optional, Any
 import uuid
 
-# Import our new ML modules
 import sys
 sys.path.append('.')
 from src.network_simulator import NetworkTrafficSimulator
 from src.ml_detection import ThreatDetectionEngine
 
 
-# Configure page
+
 st.set_page_config(
     page_title="DeepGuard AI",
     page_icon="🛡️",
@@ -29,7 +28,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+
 st.markdown("""
 <style>
     .main-header {
@@ -88,7 +87,7 @@ class DeepGuardAI:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Create tables
+
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS threats (
                 id TEXT PRIMARY KEY,
@@ -141,11 +140,11 @@ class DeepGuardAI:
     
     def generate_sample_threat_data(self) -> pd.DataFrame:
         """Generate realistic threat data using ML simulation"""
-        # Generate mixed realistic traffic
+
         flows = self.network_simulator.generate_mixed_traffic()
         df = self.network_simulator.flows_to_dataframe(flows)
         
-        # Convert to dashboard format
+
         df['severity'] = df['attack_type'].map({
             'ddos': 'HIGH',
             'data_exfiltration': 'HIGH', 
@@ -164,10 +163,9 @@ class DeepGuardAI:
     
     def generate_network_metrics(self) -> Dict:
         """Generate real-time network metrics with ML insights"""
-        # Get current threat data
+
         current_data = self.generate_sample_threat_data()
         
-        # Calculate real metrics from the data
         total_connections = len(current_data)
         suspicious_activities = len(current_data[current_data['is_malicious'] == True])
         blocked_attempts = int(suspicious_activities * 0.8)  # Assume 80% blocked
@@ -181,7 +179,7 @@ class DeepGuardAI:
             threat_level = "LOW"
         
         return {
-            'total_connections': total_connections * 50,  # Scale up for realism
+            'total_connections': total_connections * 50, 
             'suspicious_activities': suspicious_activities,
             'blocked_attempts': blocked_attempts,
             'bandwidth_usage': np.random.uniform(60, 95),
@@ -240,7 +238,7 @@ class DeepGuardAI:
     
     def create_network_analysis(self, df: pd.DataFrame) -> go.Figure:
         """Create network traffic analysis chart"""
-        # Analyze traffic patterns
+
         df['total_bytes'] = df['bytes_sent'] + df['bytes_received']
         
         fig = px.histogram(df, 
@@ -259,7 +257,7 @@ class DeepGuardAI:
     
     def create_ml_performance_chart(self) -> go.Figure:
         """Create ML model performance visualization"""
-        # Simulate model performance over time
+
         time_points = pd.date_range(start=datetime.now() - timedelta(hours=24), 
                                    periods=24, freq='H')
         
