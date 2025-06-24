@@ -14,7 +14,6 @@ from dataclasses import dataclass, asdict
 from typing import Dict, List, Optional, Any
 import uuid
 
-# Configure page
 st.set_page_config(
     page_title="DeepGuard AI",
     page_icon="🛡️",
@@ -22,7 +21,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+
 st.markdown("""
 <style>
     .main-header {
