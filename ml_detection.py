@@ -22,7 +22,7 @@ class ThreatDetectionEngine:
         features['is_high_port'] = (features['dest_port'] > 1024).astype(int)
         features['duration_log'] = np.log1p(features['duration'])
         
-        # Select numerical features
+
         feature_cols = ['total_bytes', 'total_packets', 'bytes_per_packet', 'is_high_port', 'duration_log']
         return features[feature_cols].fillna(0)
     
